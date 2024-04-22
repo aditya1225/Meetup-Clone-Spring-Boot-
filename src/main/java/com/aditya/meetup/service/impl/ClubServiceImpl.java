@@ -2,7 +2,10 @@ package com.aditya.meetup.service.impl;
 
 import com.aditya.meetup.dto.ClubDto;
 import com.aditya.meetup.model.Club;
+import com.aditya.meetup.model.UserEntity;
 import com.aditya.meetup.repository.ClubRepo;
+import com.aditya.meetup.repository.UserRepository;
+import com.aditya.meetup.security.SecurityUtil;
 import com.aditya.meetup.service.ClubService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -20,10 +23,11 @@ import static com.aditya.meetup.mapper.ClubMapper.mapToClubDto;
 
 public class ClubServiceImpl implements ClubService {
     private ClubRepo clubrepo;
+    private UserRepository userRepository;
 
-    @Autowired
-    public ClubServiceImpl(ClubRepo clubrepo) {
+    public ClubServiceImpl(ClubRepo clubrepo, UserRepository userRepository) {
         this.clubrepo = clubrepo;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -35,7 +39,10 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public Club saveClub(ClubDto clubDto) {
+        String username= SecurityUtil.getSessionUser();
+        UserEntity user=userRepository.findByUsername(username);
         Club club=mapToClubDto(clubDto);
+        club.setCreatedBy(user);
         return clubrepo.save(club);
     }
 
@@ -49,7 +56,10 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public void updateClub(ClubDto club) {
+        String username= SecurityUtil.getSessionUser();
+        UserEntity user=userRepository.findByUsername(username);
         Club club2 = mapToClubDto(club);
+        club2.setCreatedBy(user);
         clubrepo.save(club2);
 
     }

@@ -1,5 +1,6 @@
 package com.aditya.meetup.dto;
 
+import com.aditya.meetup.model.UserEntity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.validation.constraints.NotEmpty;
@@ -34,6 +35,8 @@ public class ClubDto {
         private LocalDateTime createdOn;
 
         private LocalDateTime updatedOn;
+
+        private UserEntity createdBy;
 
         private List<EventDto> events;
 

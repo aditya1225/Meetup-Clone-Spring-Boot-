@@ -2,7 +2,10 @@ package com.aditya.meetup.controller;
 
 import com.aditya.meetup.dto.ClubDto;
 import com.aditya.meetup.model.Club;
+import com.aditya.meetup.model.UserEntity;
+import com.aditya.meetup.security.SecurityUtil;
 import com.aditya.meetup.service.ClubService;
+import com.aditya.meetup.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -19,22 +22,39 @@ import java.util.List;
 
 public class ClubController {
     public ClubService clubService;
+    private UserService userService;
 
     @Autowired
-    public ClubController(ClubService clubService) {
+    public ClubController(ClubService clubService, UserService userService) {
         this.clubService = clubService;
+        this.userService = userService;
     }
 
     @GetMapping("/clubs")
     public String listClubs(Model model){
+        UserEntity user= new UserEntity();
         List<ClubDto> clubs=clubService.findAllClubs();
+        String username= SecurityUtil.getSessionUser();
+        if(username!=null){
+            user=userService.findByUsername(username);
+            model.addAttribute("user", user);
+        }
+        model.addAttribute("user", user);
         model.addAttribute("clubs", clubs);
         return "clubs-list";
     }
 
     @GetMapping("/clubs/{clubId}")
     public String clubDetail(@PathVariable("clubId") Integer clubId, Model model){
+        UserEntity user= new UserEntity();
         ClubDto clubDto=clubService.findById(clubId);
+        model.addAttribute("club", clubDto);
+        String username= SecurityUtil.getSessionUser();
+        if(username!=null){
+            user=userService.findByUsername(username);
+            model.addAttribute("user", user);
+        }
+        model.addAttribute("user", user);
         model.addAttribute("club", clubDto);
         return "clubs-detail";
     }

@@ -3,7 +3,10 @@ package com.aditya.meetup.controller;
 import com.aditya.meetup.dto.ClubDto;
 import com.aditya.meetup.dto.EventDto;
 import com.aditya.meetup.model.Event;
+import com.aditya.meetup.model.UserEntity;
+import com.aditya.meetup.security.SecurityUtil;
 import com.aditya.meetup.service.EventService;
+import com.aditya.meetup.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,15 +22,29 @@ import java.util.List;
 @Controller
 public class EventController {
     private EventService eventService;
+    private UserService userService;
+
+    public EventController(EventService eventService, UserService userService) {
+        this.eventService = eventService;
+        this.userService = userService;
+    }
 
     @Autowired
-    public EventController(EventService eventService){
-        this.eventService=eventService;
-    }
+
 
     @GetMapping("/events")
     public String eventList(Model model){
+        UserEntity user=new UserEntity();
+
         List<EventDto> events=eventService.findAllEvents();
+        String username= SecurityUtil.getSessionUser();
+        if(username!=null){
+            user=userService.findByUsername(username);
+            model.addAttribute("user", user);
+        }
+
+        model.addAttribute("user", user);
+
         model.addAttribute("events", events);
         return "events-list";
 
@@ -35,7 +52,16 @@ public class EventController {
 
     @GetMapping("/events/{eventId}")
     public String viewEvent(@PathVariable("eventId")Integer eventId, Model model){
+        UserEntity user=new UserEntity();
+
         EventDto eventDto=eventService.findByEventId(eventId);
+        String username= SecurityUtil.getSessionUser();
+        if(username!=null){
+            user=userService.findByUsername(username);
+            model.addAttribute("user", user);
+        }
+        model.addAttribute("club", eventDto);
+        model.addAttribute("user", user);
         model.addAttribute("event", eventDto);
         return "events-detail";
     }

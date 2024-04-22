@@ -76,10 +76,30 @@ public class Club {
         this.updatedOn = updatedOn;
     }
 
+    public UserEntity getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(UserEntity createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
+    }
+
     @CreationTimestamp
     private LocalDateTime createdOn;
     @UpdateTimestamp
     private LocalDateTime updatedOn;
+
+    @ManyToOne
+    @JoinColumn(name="created_by", nullable = false)
+    private UserEntity createdBy;
 
     @OneToMany(mappedBy="club", cascade=CascadeType.REMOVE)
     private List<Event> events=new ArrayList<>();

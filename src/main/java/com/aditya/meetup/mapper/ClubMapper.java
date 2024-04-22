@@ -15,6 +15,7 @@ public class ClubMapper {
         club1.setPhotoUrl(club.getPhotoUrl());
         club1.setContent(club.getContent());
         club1.setCreatedOn(club.getCreatedOn());
+        club1.setCreatedBy(club.getCreatedBy());
         club1.setUpdatedOn(club.getUpdatedOn());
         return club1;
     }
@@ -27,6 +28,7 @@ public class ClubMapper {
         clubDto.setContent(club.getContent());
         clubDto.setEvents(club.getEvents().stream().map((event) -> mapToEventDto(event)).collect(Collectors.toList()));
         clubDto.setCreatedOn(club.getCreatedOn());
+        clubDto.setCreatedBy(club.getCreatedBy());
         clubDto.setUpdatedOn(club.getUpdatedOn());
         return clubDto;
     }
