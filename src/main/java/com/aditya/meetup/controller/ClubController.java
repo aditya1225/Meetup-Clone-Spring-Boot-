@@ -48,8 +48,8 @@ public class ClubController {
 
     @GetMapping("/clubs/search")
     public String searchClub(@RequestParam(value="query") String query, Model model){
-        List<ClubDto> clubs=clubService.searchClubs(query);
-        model.addAttribute("clubs",clubs);
+        List<ClubDto> club=clubService.searchClubs(query);
+        model.addAttribute("club",club);
         return "clubs-list";
     }
 
@@ -79,8 +79,9 @@ public class ClubController {
     @PostMapping("/clubs/{clubId}/edit")
     public String updateClub(@PathVariable("clubId") Integer clubId,
                              @Valid @ModelAttribute("club") ClubDto club,
-                             BindingResult result){
+                             BindingResult result,Model model){
         if(result.hasErrors()){
+            model.addAttribute("club", club);
             return "clubs-create";
         }
         club.setId(clubId);

@@ -9,4 +9,8 @@ public interface EventService {
     List<EventDto> findAllEvents();
 
     EventDto findByEventId(Integer eventId);
+
+    void updateEvent(EventDto event);
+
+    void deleteEvent(Integer eventId);
 }
